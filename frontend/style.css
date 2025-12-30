@@ -245,28 +245,55 @@ header h1 {
     color: var(--text-secondary);
 }
 
-/* Source link styling */
-.source-link {
-    color: var(--primary-color);
+/* Sources list container */
+.sources-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.5rem 0.5rem 0.25rem 1.5rem;
+}
+
+/* Source badge styling */
+.source-badge {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px solid #3b82f6;
+    border-radius: 6px;
+    color: #60a5fa;
     text-decoration: none;
-    border-bottom: 1px dotted var(--primary-color);
+    font-size: 0.8rem;
     transition: all 0.2s ease;
+    line-height: 1.4;
 }
 
-.source-link:hover {
-    color: var(--primary-hover);
-    border-bottom-color: var(--primary-hover);
-    border-bottom-style: solid;
+.source-badge:hover {
+    background: rgba(59, 130, 246, 0.25);
+    border-color: #60a5fa;
+    color: #93c5fd;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
 }
 
-.source-link:focus {
-    outline: 2px solid var(--focus-ring);
+.source-badge:focus {
+    outline: 2px solid #60a5fa;
     outline-offset: 2px;
-    border-radius: 2px;
 }
 
-.source-text {
-    color: var(--text-secondary);
+/* Plain source badge (no link) */
+.source-badge-plain {
+    background: rgba(148, 163, 184, 0.15);
+    border-color: #64748b;
+    color: #94a3b8;
+    cursor: default;
+}
+
+.source-badge-plain:hover {
+    background: rgba(148, 163, 184, 0.15);
+    border-color: #64748b;
+    color: #94a3b8;
+    transform: none;
+    box-shadow: none;
 }
 
 /* Markdown formatting styles */
