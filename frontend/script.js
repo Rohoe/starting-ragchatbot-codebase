@@ -74,7 +74,7 @@ async function sendMessage() {
         if (!response.ok) throw new Error('Query failed');
 
         const data = await response.json();
-        
+
         // Update session ID if new
         if (!currentSessionId) {
             currentSessionId = data.session_id;
@@ -122,10 +122,21 @@ function addMessage(content, type, sources = null, isWelcome = false) {
     let html = `<div class="message-content">${displayContent}</div>`;
     
     if (sources && sources.length > 0) {
+        // Build source links
+        const sourceLinks = sources.map(source => {
+            if (source.lesson_link) {
+                // Create clickable link that opens in new tab
+                return `<a href="${escapeHtml(source.lesson_link)}" target="_blank" rel="noopener noreferrer" class="source-link">${escapeHtml(source.display_text)}</a>`;
+            } else {
+                // No link available - just display text
+                return `<span class="source-text">${escapeHtml(source.display_text)}</span>`;
+            }
+        }).join(', ');
+
         html += `
             <details class="sources-collapsible">
                 <summary class="sources-header">Sources</summary>
-                <div class="sources-content">${sources.join(', ')}</div>
+                <div class="sources-content">${sourceLinks}</div>
             </details>
         `;
     }

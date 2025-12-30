@@ -1,6 +1,7 @@
-from typing import Dict, Any, Optional, Protocol
+from typing import Dict, Any, Optional, Protocol, List
 from abc import ABC, abstractmethod
 from vector_store import VectorStore, SearchResults
+from models import Source
 
 
 class Tool(ABC):
@@ -22,7 +23,7 @@ class CourseSearchTool(Tool):
     
     def __init__(self, vector_store: VectorStore):
         self.store = vector_store
-        self.last_sources = []  # Track sources from last search
+        self.last_sources: List[Source] = []  # Track sources from last search
     
     def get_tool_definition(self) -> Dict[str, Any]:
         """Return Anthropic tool definition for this tool"""
@@ -89,28 +90,38 @@ class CourseSearchTool(Tool):
         """Format search results with course and lesson context"""
         formatted = []
         sources = []  # Track sources for the UI
-        
+
         for doc, meta in zip(results.documents, results.metadata):
             course_title = meta.get('course_title', 'unknown')
             lesson_num = meta.get('lesson_number')
-            
-            # Build context header
-            header = f"[{course_title}"
+
+            # Build display text
+            display = course_title
             if lesson_num is not None:
-                header += f" - Lesson {lesson_num}"
-            header += "]"
-            
-            # Track source for the UI
-            source = course_title
+                display += f" - Lesson {lesson_num}"
+
+            # Build context header for Claude
+            header = f"[{display}]"
+
+            # Retrieve lesson link (if available)
+            lesson_link = None
             if lesson_num is not None:
-                source += f" - Lesson {lesson_num}"
+                lesson_link = self.store.get_lesson_link(course_title, lesson_num)
+
+            # Create Source object
+            source = Source(
+                display_text=display,
+                lesson_link=lesson_link,
+                course_title=course_title,
+                lesson_number=lesson_num
+            )
             sources.append(source)
-            
+
             formatted.append(f"{header}\n{doc}")
-        
+
         # Store sources for retrieval
         self.last_sources = sources
-        
+
         return "\n\n".join(formatted)
 
 class ToolManager:
@@ -139,7 +150,7 @@ class ToolManager:
         
         return self.tools[tool_name].execute(**kwargs)
     
-    def get_last_sources(self) -> list:
+    def get_last_sources(self) -> List[Source]:
         """Get sources from the last search operation"""
         # Check all tools for last_sources attribute
         for tool in self.tools.values():
