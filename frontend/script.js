@@ -5,7 +5,7 @@ const API_URL = '/api';
 let currentSessionId = null;
 
 // DOM elements
-let chatMessages, chatInput, sendButton, totalCourses, courseTitles;
+let chatMessages, chatInput, sendButton, totalCourses, courseTitles, newChatButton;
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
@@ -15,7 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
     sendButton = document.getElementById('sendButton');
     totalCourses = document.getElementById('totalCourses');
     courseTitles = document.getElementById('courseTitles');
-    
+    newChatButton = document.getElementById('newChatButton');
+
     setupEventListeners();
     createNewSession();
     loadCourseStats();
@@ -28,8 +29,12 @@ function setupEventListeners() {
     chatInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendMessage();
     });
-    
-    
+
+    // New chat button
+    if (newChatButton) {
+        newChatButton.addEventListener('click', handleNewChat);
+    }
+
     // Suggested questions
     document.querySelectorAll('.suggested-item').forEach(button => {
         button.addEventListener('click', (e) => {
@@ -161,6 +166,33 @@ async function createNewSession() {
     currentSessionId = null;
     chatMessages.innerHTML = '';
     addMessage('Welcome to the Course Materials Assistant! I can help you with questions about courses, lessons and specific content. What would you like to know?', 'assistant', null, true);
+}
+
+// Handle new chat button click
+function handleNewChat() {
+    // Don't allow new chat while loading
+    if (sendButton.disabled) return;
+
+    // Show confirmation if there's an active conversation
+    if (currentSessionId !== null) {
+        const hasMessages = chatMessages.querySelectorAll('.message:not(.welcome-message)').length > 0;
+        if (hasMessages) {
+            const confirmed = confirm('Start a new chat? This will clear the current conversation.');
+            if (!confirmed) return;
+        }
+    }
+
+    // Create new session
+    createNewSession();
+
+    // Visual feedback
+    newChatButton.classList.add('button-clicked');
+    setTimeout(() => {
+        newChatButton.classList.remove('button-clicked');
+    }, 200);
+
+    // Focus on input for immediate typing
+    chatInput.focus();
 }
 
 // Load course statistics
