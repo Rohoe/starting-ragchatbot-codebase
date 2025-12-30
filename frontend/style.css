@@ -117,10 +117,9 @@ header h1 {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    background: var(--background);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
+    padding: 0.5rem 0;
+    background: none;
+    border: none;
     color: var(--text-secondary);
     font-size: 0.875rem;
     font-weight: 600;
@@ -132,10 +131,10 @@ header h1 {
 }
 
 .new-chat-icon {
-    font-size: 1.25rem;
+    font-size: 0.875rem;
     font-weight: 700;
     line-height: 1;
-    color: var(--primary-color);
+    margin-right: 0;
 }
 
 .new-chat-text {
@@ -143,25 +142,20 @@ header h1 {
 }
 
 .new-chat-button:hover {
-    background: var(--surface-hover);
-    border-color: var(--primary-color);
     color: var(--primary-color);
-    transform: translateX(2px);
 }
 
 .new-chat-button:focus {
     outline: none;
-    box-shadow: 0 0 0 3px var(--focus-ring);
+    color: var(--primary-color);
 }
 
 .new-chat-button:active {
-    transform: translateX(0);
-    background: var(--surface);
+    color: var(--primary-color);
 }
 
 .new-chat-button.button-clicked {
-    background: var(--primary-color);
-    color: white;
+    color: var(--primary-color);
 }
 
 /* Main Chat Area */
